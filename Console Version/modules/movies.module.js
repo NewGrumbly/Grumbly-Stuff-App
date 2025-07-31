@@ -34,8 +34,35 @@ async function gestionarPeliculas() {
         }
         if (watchlistCache.length > 0) {
           await mostrarListaPaginada(watchlistCache, `Watchlist de ${username}`);
+          const { confirmarSeleccion } = await inquirer.prompt([
+            {
+              type: 'confirm',
+              name: 'confirmarSeleccion',
+              message: '¿Quieres elegir una película de tu watchlist?',
+              default: false,
+            },
+          ]);
+
+          if (confirmarSeleccion){
+            const { numeroPelicula } = await inquirer.prompt([
+              {
+                type: 'input',
+                name: 'numeroPelicula',
+                message: `Ingresa el número de la película (1-${watchlistCache.length}): `,
+                validate: (input) => {
+                  const num = parseInt(input);
+                  return !isNaN(num) && num >= 1 && num <= watchlistCache.length ? true : 'Por favor, ingresa un número válido.';
+                },
+              }
+            ]);
+
+            const peliSeleccionada = watchlistCache[numeroPelicula - 1];
+            console.log("\n✨ ¡La película elegida es! ✨");
+            console.log(`\n\t-> ${peliSeleccionada.title}\n`);
+            await inquirer.prompt([{ type: 'input', name: 'pausa', message: 'Presiona Enter para continuar...' }]);
+          }
         } else {
-          console.log("\nNo se pudo obtener la watchlist. Revisa tu usuario en el .env o tu conexión.");
+          console.log("\nNo se pudo obtener la watchlist. Revisa tu usuario en el .env o tu conexión."); 
           await inquirer.prompt([{ type: 'input', name: 'pausa', message: 'Presiona Enter para continuar...' }]);
         }
         break;
