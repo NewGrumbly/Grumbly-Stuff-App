@@ -1,0 +1,18 @@
+{
+  "name": "grumblys-stuff-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Lugar para gestionar actividades, entre otras cosas",
+  "dependencies": {
+    "cheerio": "^1.1.0",
+    "dotenv": "^17.1.0",
+    "inquirer": "^8.2.6",
+    "puppeteer": "^24.12.0"
+  }
+}
