@@ -1,19 +1,20 @@
 // letterboxdScraper.js
 
-const cheerio = require("cheerio");
-const puppeteer = require("puppeteer");
+const cheerio = require("cheerio"); // Importamos Cheerio para manipular el HTML
+const puppeteer = require("puppeteer"); // Importamos Puppeteer para controlar el navegador
 
+// Función para scrapear la watchlist de Letterboxd
 async function scrapeWatchlist(username) {
   console.log("Iniciando scraping de la watchlist...");
 
-  // Definimos una variable para el navegador.
+  // Definimos una variable para el navegador
   let browser;
 
   try {
-    // Lanzamos una instancia del navegador.
+    // Lanzamos una instancia del navegador
     browser = await puppeteer.launch({ headless: "new" });
 
-    // Abrimos una nueva página.
+    // Abrimos una nueva página
     const page = await browser.newPage();
     // URL actual de la watchlist
     let currentPageUrl = `https://letterboxd.com/${username}/watchlist/`;
@@ -27,7 +28,7 @@ async function scrapeWatchlist(username) {
 
       // Obtenemos el contenido HTML de la página
       const pageContent = await page.content();
-      // Cargamos el HTML en Cheerio para poder manipularlo.
+      // Cargamos el HTML en Cheerio para poder manipularlo
       const $ = cheerio.load(pageContent);
 
       // Buscamos los elementos que contienen los pósters de las películas
@@ -37,7 +38,7 @@ async function scrapeWatchlist(username) {
       filmPosters.each((_, element) => {
         const posterDiv = $(element); // Convertimos el elemento HTML a un objeto Cheerio
 
-        // Extraemos el título de la película del atributo 'alt' de la imagen dentro del div.
+        // Extraemos el título de la película del atributo 'alt' de la imagen dentro del div
         const title = posterDiv.find("img").attr("alt");
 
         // Si el título no es nulo, lo agregamos a la lista
@@ -58,7 +59,7 @@ async function scrapeWatchlist(username) {
       }
     }
 
-    return allMovies;
+    return allMovies; // Devolvemos la lista de películas
   } catch (error) {
     console.error(`Error durante el scaping de la Watchlist: ${error.message}`);
     return [];
