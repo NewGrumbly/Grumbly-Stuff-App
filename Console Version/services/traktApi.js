@@ -114,7 +114,8 @@ class TraktService {
           'trakt-api-key': this.clientId,
         }
       });
-      
+
+      console.log(`✅ ¡Series obtenidas!`);
       return response.data
         .filter(item => item.type === 'show')
         .map(item => ({

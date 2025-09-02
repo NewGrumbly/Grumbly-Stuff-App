@@ -6,6 +6,7 @@ const { mostrarEncabezado } = require('./utils/cli.utils.js'); // Importar funci
 const { gestionarPeliculas } = require('./modules/movies.module.js'); // Importar el módulo de gestión de películas
 const { gestionarJuegos } = require('./modules/games.module.js'); // Importar el módulo de gestión de juegos
 const { gestionarSeries } = require('./modules/series.module.js'); // Importar el módulo de gestión de series
+const { gestionarLibros } = require('./modules/books.module.js'); // Importar el módulo de gestión de libros
 
 async function main() { 
   let seguirEnApp = true;
@@ -17,9 +18,10 @@ async function main() {
         name: 'modulo',
         message: 'Escoge un módulo',
         choices: [
-          { name: 'Películas', value: 'peliculas' },
-          { name: 'Juegos', value: 'juegos' },
-          { name: 'Series', value: 'series'},
+          { name: '🎬 Películas', value: 'peliculas' },
+          { name: '🎮 Juegos', value: 'juegos' },
+          { name: '📺 Series', value: 'series'},
+          { name: '📚 Libros', value: 'libros'},
           new inquirer.Separator(), // Separador visual
           { name: 'Salir del programa', value: 'salir' },
         ],
@@ -36,12 +38,15 @@ async function main() {
       case 'series':
         await gestionarSeries();
         break;
+      case 'libros':
+        await gestionarLibros();
+        break;
       case 'salir':
         seguirEnApp = false;
         break;
     }
   }
-  console.log("\n¡Hasta la próxima!"); 
+  console.log("\n¡Chao pescao!"); 
 }
 
 main();

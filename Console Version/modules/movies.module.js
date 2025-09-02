@@ -31,7 +31,7 @@ async function gestionarPeliculas() {
           // Asegurar autenticación
           await tmdb.initialize(); 
 
-          // Obtener la watchlist.
+          // Obtener la watchlist
           const watchlistData = await tmdb.getMovieWatchlist();
 
           // Validar la respuesta y las películas
