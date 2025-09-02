@@ -1,4 +1,6 @@
 // modules/games.module.js
+// Módulo para gestionar juegos por consola
+
 
 const inquirer = require('inquirer');
 const { mostrarEncabezado } = require('../utils/cli.utils.js');
@@ -55,7 +57,7 @@ async function gestionarJuegos() {
             console.log(`\n✨ ¡El juego sugerido de la lista "${status}" es! ✨`);
             console.log(`\n\t-> ${juegoAleatorio.title}\n`);
           } else {
-            console.log(`\n❌ No se encontraron juegos en la lista "${status}" o hubo un error.`);
+            console.log(`\n❌ No se encontraron juegos en la lista "${status}" de Infinite Backlog o hubo un error`);
           }
         } catch (error) {
           console.error(`\n❌ Ocurrió un error general en el módulo de juegos:`, error.message);

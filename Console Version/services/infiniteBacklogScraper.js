@@ -1,4 +1,5 @@
-// infiniteBacklogScraper.js
+// services/infiniteBacklogScraper.js
+// Servicio para scrapear colecciones de juegos en Infinite Backlog
 
 const cheerio = require("cheerio"); // Importamos Cheerio para manipular el HTML
 const puppeteer = require("puppeteer"); // Importamos Puppeteer para controlar el navegador

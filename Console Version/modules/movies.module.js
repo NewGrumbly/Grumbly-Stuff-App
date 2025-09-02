@@ -1,4 +1,5 @@
 // modules/movies.module.js
+// Módulo para gestionar películas por consola
 
 const inquirer = require('inquirer');
 const { mostrarEncabezado, mostrarListaPaginada } = require('../utils/cli.utils.js');

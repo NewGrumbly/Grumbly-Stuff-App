@@ -1,5 +1,5 @@
-// tmdbApi.js
-// Módulo para comunicarse con la API de The Movie Database (TMDB)
+// services/tmdbApi.js
+// Servicio para interactuar con la API de TMDB
 
 const axios = require('axios');
 const readline = require('readline');
