@@ -3,8 +3,17 @@
 const cheerio = require("cheerio"); // Importamos Cheerio para manipular el HTML
 const puppeteer = require("puppeteer"); // Importamos Puppeteer para controlar el navegador
 
-async function scrapeCollection(username, type) {
-  console.log("Iniciando scraping de la colección...");
+// Definimos un user-agent común para evitar bloqueos
+const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36';
+
+async function scrapeGames(username, status) {
+
+  if (status !== 'unplayed' && status !== 'wishlist') {
+    console.error("❌ Status inválido. Debe ser 'unplayed' o 'wishlist'.");
+    return [];
+  }
+
+  console.log(`🚀 Iniciando scraping para la colección ${status} de ${username}...`);
 
   // Definimos una variable para el navegador
   let browser;
@@ -15,34 +24,47 @@ async function scrapeCollection(username, type) {
     // Abrimos una nueva página
     const page = await browser.newPage();
 
-    let currentPageUrl;
-    // De acuerdo al valor de type, currentPageUrl cambia
-    if (type === "wishlist") {
-      currentPageUrl = `https://infinitebacklog.net/users/${username}/wishlist/`;
-    } else if (type === "playing") {
-      currentPageUrl = `https://infinitebacklog.net/users/${username}/collection?status=playing`;
-    } else if (type === "unplayed") {
-      currentPageUrl = `https://infinitebacklog.net/users/${username}/collection?status=unplayed`;
+    // Establecer el user-agent
+    await page.setUserAgent(USER_AGENT);
+    // Establecer viewport realista
+    await page.setViewport({ width: 1920, height: 1080});
+    // Script para evadir detección de WebDriver
+    await page.evaluateOnNewDocument(() => {
+      Object.definteProperty(navigator, 'webdriver', {
+        get: () => false,
+      });
+    });
+
+    let initialUrl;
+    // De acuerdo al valor de status, initialUrl cambia
+    if (status === "wishlist") {
+      initialUrl = `https://infinitebacklog.net/users/${username}/wishlist/`;
+    } else if (status === "unplayed") {
+      initialUrl = `https://infinitebacklog.net/users/${username}/collection?status=unplayed`;
     }
+
     let allGames = []; // Lista para almacenar todos los juegos
     let hasNextPage = true; // Bandera para controlar la paginación
 
     // Navegamos a la URL de la colección
-    await page.goto(currentPageUrl);
+    await page.goto(initialUrl);
 
     // Mientras haya más páginas, seguimos scrapeando
     while (hasNextPage) {
       // Esperamos a que se cargue el contenedor de la colección
       await page.waitForSelector("div.collection-list"); 
 
+      // Pausa para que se renderice todo
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       // Obtenemos el contenido HTML de la página
       const pageContent = await page.content();
       // Cargamos el HTML en Cheerio para poder manipularlo
       const $ = cheerio.load(pageContent);
 
-      // Definimos el selector para los juegos según el tipo
+      // Definimos el selector para los juegos según el status
       let gameItemSelector;
-      if (type === "wishlist") {
+      if (status === "wishlist") {
         gameItemSelector = "div.coll-game.wishlist-item";
       } else {
         gameItemSelector = "div.coll-game.collection-list-item";
@@ -79,9 +101,10 @@ async function scrapeCollection(username, type) {
         hasNextPage = false; // Si no hay más páginas, terminamos el bucle
       }
     }
+    console.log(`✅ ¡Juegos obtenidos!`);
     return allGames; // Devolvemos la lista de juegos
   } catch (error) {
-    console.error(`Error durante el scraping: ${error.message}`);
+    console.error(`❌ Error durante el scraping de juegos: ${error.message}`);
     return [];
   } finally {
     // Cerramos el navegador
@@ -93,5 +116,5 @@ async function scrapeCollection(username, type) {
 
 // Exportamos la función
 module.exports = {
-  scrapeCollection,
+  scrapeGames,
 };

@@ -203,7 +203,7 @@ class TMDBAPI {
           year: movie.release_date ? movie.release_date.slice(0, 4) : null
         }));
 
-        console.log(`✅ ¡Datos obtenidos!`);
+        console.log(`✅ ¡Películas obtenidas!`);
         return {
           success: true,
           total_results: response.data.total_results,
