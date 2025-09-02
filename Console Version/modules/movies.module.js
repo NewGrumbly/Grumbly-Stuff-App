@@ -2,10 +2,9 @@
 
 const inquirer = require('inquirer');
 const { mostrarEncabezado, mostrarListaPaginada } = require('../utils/cli.utils.js');
-const { scrapeWatchlist } = require('../scrapers/letterboxdScraper.js');
+const TMDBAPI = require('../services/tmdbApi.js');
+const tmdb = new TMDBAPI();
 
-const username = process.env.LETTERBOXD_USERNAME;
-let watchlistCache = [];
 
 async function gestionarPeliculas() {
   let seguirEnModulo = true;
@@ -18,7 +17,6 @@ async function gestionarPeliculas() {
         name: 'opcion',
         message: '¿Qué te gustaría hacer?',
         choices: [
-          { name: 'Ver mi Watchlist (paginada)', value: 'verWatchlist' },
           { name: 'Escoger una película aleatoria de la Watchlist', value: 'aleatoria' },
           new inquirer.Separator(),
           { name: 'Volver al menú principal', value: 'volver' },
@@ -27,60 +25,33 @@ async function gestionarPeliculas() {
     ]);
 
     switch (opcion) {
-      case 'verWatchlist':
-        if (watchlistCache.length === 0) {
-          console.log("Obteniendo tu watchlist por primera vez. Esto puede tardar un momento...");
-          watchlistCache = await scrapeWatchlist(username);
-        }
-        if (watchlistCache.length > 0) {
-          await mostrarListaPaginada(watchlistCache, `Watchlist de ${username}`);
-          const { confirmarSeleccion } = await inquirer.prompt([
-            {
-              type: 'confirm',
-              name: 'confirmarSeleccion',
-              message: '¿Quieres elegir una película de tu watchlist?',
-              default: false,
-            },
-          ]);
-
-          if (confirmarSeleccion){
-            const { numeroPelicula } = await inquirer.prompt([
-              {
-                type: 'input',
-                name: 'numeroPelicula',
-                message: `Ingresa el número de la película (1-${watchlistCache.length}): `,
-                validate: (input) => {
-                  const num = parseInt(input);
-                  return !isNaN(num) && num >= 1 && num <= watchlistCache.length ? true : 'Por favor, ingresa un número válido.';
-                },
-              }
-            ]);
-
-            const peliSeleccionada = watchlistCache[numeroPelicula - 1];
-            console.log("\n✨ ¡La película elegida es! ✨");
-            console.log(`\n\t-> ${peliSeleccionada.title}\n`);
-            await inquirer.prompt([{ type: 'input', name: 'pausa', message: 'Presiona Enter para continuar...' }]);
-          }
-        } else {
-          console.log("\nNo se pudo obtener la watchlist. Revisa tu usuario en el .env o tu conexión."); 
-          await inquirer.prompt([{ type: 'input', name: 'pausa', message: 'Presiona Enter para continuar...' }]);
-        }
-        break;
-
       case 'aleatoria':
-        if (watchlistCache.length === 0) {
-          console.log("Obteniendo tu watchlist por primera vez. Esto puede tardar un momento...");
-          watchlistCache = await scrapeWatchlist(username);
+        try {
+          // Asegurar autenticación
+          await tmdb.initialize(); 
+
+          // Obtener la watchlist.
+          const watchlistData = await tmdb.getMovieWatchlist();
+
+          // Validar la respuesta y las películas
+          if (watchlistData.success && watchlistData.movies.length > 0) {
+            const movies = watchlistData.movies;
+            // Seleccionar una película aleatoria
+            const peliAleatoria = movies[Math.floor(Math.random() * movies.length)];
+            
+            console.log("\n✨ ¡La película sugerida es...! ✨");
+            console.log(`\n\t-> ${peliAleatoria.title} (${peliAleatoria.year})\n`);
+          } else {
+            // Manejar en caso de error
+            console.log("\n❌ No se encontraron películas en tu watchlist de TMDB o hubo un error.");
+          }
+        } catch (error) {
+          // Manejar errores durante la inicialización
+          console.error("\n❌ Ocurrió un error durante el proceso:", error.message);
         }
-        if (watchlistCache.length > 0) {
-          const peliAleatoria = watchlistCache[Math.floor(Math.random() * watchlistCache.length)];
-          console.log("\n✨ ¡La película elegida es! ✨");
-          console.log(`\n\t-> ${peliAleatoria.title}\n`);
-        } else {
-          console.log("\nNo se pudo obtener la watchlist para elegir una película.");
-        }
-        await inquirer.prompt([{ type: 'input', name: 'pausa', message: 'Presiona Enter para continuar...' }]);
-        break;
+      // Pausa para leer el resultado
+      await inquirer.prompt([{ type: 'input', name: 'pausa', message: 'Presiona Enter para continuar...' }]);
+      break;
 
       case 'volver':
         seguirEnModulo = false;

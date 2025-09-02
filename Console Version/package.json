@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "Lugar para gestionar actividades, entre otras cosas",
   "dependencies": {
+    "axios": "^1.11.0",
     "cheerio": "^1.1.0",
     "dotenv": "^17.1.0",
     "inquirer": "^8.2.6",
