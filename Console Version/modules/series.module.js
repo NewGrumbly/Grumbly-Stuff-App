@@ -19,7 +19,7 @@ async function gestionarSeries() {
         name: 'opcion',
         message: '¿Qué te gustaría hacer?',
         choices: [
-          { name: 'Sugerir serie aleatoria de mi Watchlist', value: 'aleatoria' },
+          { name: 'Sugerir serie aleatoria que tenga pendiente', value: 'aleatoria' },
           new inquirer.Separator(),
           { name: 'Volver al menú principal', value: 'volver' },
         ],
@@ -34,7 +34,7 @@ async function gestionarSeries() {
 
           if (shows && shows.length > 0) {
             const serieAleatoria = shows[Math.floor(Math.random() * shows.length)];
-            console.log('\n✨ ¡La serie sugerida de tu Watchlist es...! ✨');
+            console.log('\n✨ ¡La serie sugerida es...! ✨');
             console.log(`\n\t-> ${serieAleatoria.title} (${serieAleatoria.year})\n`);
           } else {
             console.log('\n❌ No se encontraron series en tu watchlist de Trakt.tv o hubo un error\n');

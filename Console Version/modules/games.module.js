@@ -37,11 +37,12 @@ async function gestionarJuegos() {
         const isUnplayed = opcion === 'aleatorioUnplayed';
         let cache = isUnplayed ? unplayedCache : wishlistCache;
         const status = isUnplayed ? 'unplayed' : 'wishlist';
+        const displayName = isUnplayed ? 'Backlog' : 'Wishlist';
 
         try {
           // Si la caché correspondiente está vacía, ejecutar scraping
           if (cache.length === 0) {
-            console.log(`\nObteniendo la lista "${status}" por primera vez...`);
+            console.log(`\nObteniendo tu ${displayName} por primera vez...`);
             cache = await scrapeGames(username, status);
             
             // Actualizar caché después del scraping
@@ -54,10 +55,10 @@ async function gestionarJuegos() {
 
           if (cache.length > 0) {
             const juegoAleatorio = cache[Math.floor(Math.random() * cache.length)];
-            console.log(`\n✨ ¡El juego sugerido de la lista "${status}" es! ✨`);
+            console.log(`\n✨ ¡El juego sugerido de tu ${displayName} es...! ✨`);
             console.log(`\n\t-> ${juegoAleatorio.title}\n`);
           } else {
-            console.log(`\n❌ No se encontraron juegos en la lista "${status}" de Infinite Backlog o hubo un error`);
+            console.log(`\n❌ No se encontraron juegos en tu ${displayName} de Infinite Backlog o hubo un error`);
           }
         } catch (error) {
           console.error(`\n❌ Ocurrió un error general en el módulo de juegos:`, error.message);

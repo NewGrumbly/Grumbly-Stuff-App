@@ -18,7 +18,7 @@ async function gestionarPeliculas() {
         name: 'opcion',
         message: '¿Qué te gustaría hacer?',
         choices: [
-          { name: 'Sugerir una película aleatoria de mi Watchlist', value: 'aleatoria' },
+          { name: 'Sugerir una película aleatoria que tenga pendiente', value: 'aleatoria' },
           new inquirer.Separator(),
           { name: 'Volver al menú principal', value: 'volver' },
         ],

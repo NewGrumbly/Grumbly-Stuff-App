@@ -48,8 +48,10 @@ async function scrapeGames(username, status) {
     let hasNextPage = true; // Bandera para controlar la paginación
 
     // Navegamos a la URL de la colección
+    console.log('Entrando a Infinite Backlog...');
     await page.goto(initialUrl);
 
+    console.log('🔍 Extrayendo los juegos de la colección...');
     // Mientras haya más páginas, seguimos scrapeando
     while (hasNextPage) {
       // Esperamos a que se cargue el contenedor de la colección

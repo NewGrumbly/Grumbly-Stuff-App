@@ -20,7 +20,7 @@ async function gestionarLibros() {
         name: 'opcion',
         message: '¿Qué te gustaría hacer?',
         choices: [
-          { name: 'Sugerir libro aleatorio de mis pendientes', value: 'aleatorio' },
+          { name: 'Sugerir libro aleatorio que tenga pendiente', value: 'aleatorio' },
           new inquirer.Separator(),
           { name: 'Volver al menú principal', value: 'volver' },
         ],
@@ -38,7 +38,7 @@ async function gestionarLibros() {
 
           if (toReadCache.length > 0) {
             const libroAleatorio = toReadCache[Math.floor(Math.random() * toReadCache.length)];
-            console.log('\n✨ ¡El libro sugerido de tu lista de pendientes es! ✨');
+            console.log('\n✨ ¡El libro sugerido es...! ✨');
             console.log(`\n\t-> "${libroAleatorio.title}" de ${libroAleatorio.author}\n`);
           } else {
             console.log('\n❌ No se encontraron libros en tu lista o hubo un error durante el scraping.');
